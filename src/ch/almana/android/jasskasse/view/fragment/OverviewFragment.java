@@ -75,8 +75,8 @@ public class OverviewFragment extends Fragment implements LoaderCallbacks<Cursor
 				StringBuilder dateTime = new StringBuilder();
 				long ts = c.getLong(Transaction.INDEX_TIME);
 				dateTime.append(DateFormat.getDateFormat(getActivity()).format(ts));
-				dateTime.append(" ");
-				dateTime.append(DateFormat.getTimeFormat(getActivity()).format(ts));
+				//				dateTime.append("\n");
+				//				dateTime.append(DateFormat.getTimeFormat(getActivity()).format(ts));
 				tvLastTransaction.setText(dateTime);
 				tvLastTransactionAmount.setText(FormatHelper.formatCurrency(c.getFloat(Transaction.INDEX_AMOUNT)));
 			}

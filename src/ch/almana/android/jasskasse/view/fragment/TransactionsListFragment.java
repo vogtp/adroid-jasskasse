@@ -3,7 +3,6 @@ package ch.almana.android.jasskasse.view.fragment;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -56,9 +55,9 @@ public class TransactionsListFragment extends ListFragment implements LoaderCall
 								money = c.getFloat(Transaction.INDEX_SALDO_SUM);
 							}
 						}
-						int color = Color.GREEN;//getActivity().getResources().getColor(id);
+						int color = getActivity().getResources().getColor(R.color.moneyGreen);
 						if (money < 0f) {
-							color = Color.RED;
+							color = getActivity().getResources().getColor(R.color.moneyRed);
 						}
 						((TextView) view).setTextColor(color);
 

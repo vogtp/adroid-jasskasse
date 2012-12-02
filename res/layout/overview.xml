@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="7dp" >
+    android:padding="3dp" >
 
     <ScrollView
         android:id="@+id/scrollView1"
@@ -13,11 +13,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/background"
+                android:padding="10dp" >
 
                 <TableRow
                     android:id="@+id/tableRow1"
@@ -26,19 +29,19 @@
 
                     <TextView
                         android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/labelSaldo"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <TextView
                         android:id="@+id/tvSaldo"
-                        android:layout_width="wrap_content"
+                        style="@style/styleOverviewValue"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:padding="7dp"
-                        android:text="635"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:layout_weight="1"
+                        android:text="635" />
                 </TableRow>
 
                 <TableRow
@@ -48,16 +51,18 @@
 
                     <TextView
                         android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/labelLastTransation"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <TextView
                         android:id="@+id/tvLastTransaction"
-                        android:layout_width="wrap_content"
+                        style="@style/styleOverviewValue"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:padding="7dp"
+                        android:layout_weight="1"
                         android:text="Medium Text"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
@@ -69,27 +74,30 @@
 
                     <TextView
                         android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/lastTransactionAmount"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <TextView
                         android:id="@+id/tvLastTransactionAmount"
-                        android:layout_width="wrap_content"
+                        style="@style/styleOverviewValue"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:padding="7dp"
+                        android:layout_weight="1"
                         android:text="Medium Text"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
-
-                <fragment
-                    android:id="@+id/fragOverviewTransactionEdit"
-                    android:name="ch.almana.android.jasskasse.view.fragment.TransactionEditFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="14dp" />
             </TableLayout>
+
+            <fragment
+                android:id="@+id/fragOverviewTransactionEdit"
+                android:name="ch.almana.android.jasskasse.view.fragment.TransactionEditFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_marginTop="14dp" />
         </LinearLayout>
     </ScrollView>
 
