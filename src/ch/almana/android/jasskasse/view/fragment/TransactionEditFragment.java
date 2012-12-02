@@ -28,6 +28,7 @@ public class TransactionEditFragment extends Fragment {
 
 	//	private static final String STATE_AMOUNT = "STATE_AMOUNT";
 
+	private static final float NO_AMOUNT = Float.POSITIVE_INFINITY;
 	private Button buDeposit;
 	private Button buWithdraw;
 	private EditText etAmount;
@@ -131,21 +132,24 @@ public class TransactionEditFragment extends Fragment {
 
 	protected void save(boolean withdraw) {
 		float number = getAmount();
-			number = Math.abs(number);
-			if (withdraw) {
-				number *= -1f;
-			}
-			ContentValues values = new ContentValues();
-			values.put(Transaction.NAME_AMOUNT, number);
-			values.put(Transaction.NAME_TIME, getTime().getTimeInMillis());
-			values.put(Transaction.NAME_COMMENT, getComment());
-			if (isUpdate) {
-				getActivity().getContentResolver().update(contentUri, values, null, null);
-			} else {
-				getActivity().getContentResolver().insert(Transaction.CONTENT_URI, values);
-			}
-			etAmount.setText(null);
-			etComment.setText(null);
+		if (number == NO_AMOUNT) {
+			return;
+		}
+		number = Math.abs(number);
+		if (withdraw) {
+			number *= -1f;
+		}
+		ContentValues values = new ContentValues();
+		values.put(Transaction.NAME_AMOUNT, number);
+		values.put(Transaction.NAME_TIME, getTime().getTimeInMillis());
+		values.put(Transaction.NAME_COMMENT, getComment());
+		if (isUpdate) {
+			getActivity().getContentResolver().update(contentUri, values, null, null);
+		} else {
+			getActivity().getContentResolver().insert(Transaction.CONTENT_URI, values);
+		}
+		etAmount.setText(null);
+		etComment.setText(null);
 	}
 
 	private float getAmount() {
@@ -154,7 +158,7 @@ public class TransactionEditFragment extends Fragment {
 			return Float.parseFloat(a);
 		} catch (NumberFormatException e) {
 			Logger.e("Cannot parse as number: " + a, e);
-			return Float.POSITIVE_INFINITY;
+			return NO_AMOUNT;
 		}
 	}
 
@@ -165,18 +169,17 @@ public class TransactionEditFragment extends Fragment {
 
 	private Calendar getTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(time.getTimeInMillis());
+		if (time != null) {
+			cal.setTimeInMillis(time.getTimeInMillis());
+		}
 		cal.set(Calendar.YEAR, dpDate.getYear());
 		cal.set(Calendar.MONTH, dpDate.getMonth());
 		cal.set(Calendar.DAY_OF_MONTH, dpDate.getDayOfMonth());
 		return cal;
 	}
 
-	
-	
 	public boolean shouldSave() {
-		return isEditor && !(getTime().equals(time) && StringUtils.equal(getComment(), comment) && getAmount() == amount);
+		return isEditor && !(getTime().equals(time) && StringUtils.equal(getComment(), comment) && getAmount() != NO_AMOUNT && getAmount() == amount);
 	}
-
 
 }
