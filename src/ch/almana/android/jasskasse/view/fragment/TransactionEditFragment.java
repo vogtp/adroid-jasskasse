@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 import ch.almana.android.jasskasse.R;
 import ch.almana.android.jasskasse.db.DB.Transaction;
 import ch.almana.android.jasskasse.log.Logger;
+import ch.almana.android.logdebug.StringUtils;
 
 public class TransactionEditFragment extends Fragment {
 
@@ -37,10 +38,12 @@ public class TransactionEditFragment extends Fragment {
 	private RadioButton radioWithdraw;
 	private RadioGroup radioGroup;
 	private LinearLayout llButtons;
-	private boolean saved = true;
 	private boolean isUpdate = false;;
 	private boolean isEditor = false;
 	private Uri contentUri;
+	private float amount;
+	private Calendar time;
+	private String comment;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class TransactionEditFragment extends Fragment {
 		radioGroup = (RadioGroup) v.findViewById(R.id.radioGroup);
 		radioDeposit = (RadioButton) v.findViewById(R.id.radioDeposit);
 		radioWithdraw = (RadioButton) v.findViewById(R.id.radioWithdraw);
+
 		return v;
 	}
 
@@ -68,16 +72,16 @@ public class TransactionEditFragment extends Fragment {
 				CursorLoader cl = new CursorLoader(getActivity(), contentUri, Transaction.PROJECTION_DEFAULT, null, null, null);
 				Cursor c = cl.loadInBackground();
 				if (c != null && c.moveToFirst()) {
-					float amount = c.getFloat(Transaction.INDEX_AMOUNT);
+					amount = c.getFloat(Transaction.INDEX_AMOUNT);
 					radioDeposit.setChecked(amount >= 0);
 					radioWithdraw.setChecked(amount < 0);
 					etAmount.setText(Float.toString(Math.abs(amount)));
-					etComment.setText(c.getString(Transaction.INDEX_COMMENT));
-					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(c.getLong(Transaction.INDEX_TIME));
-					dpDate.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+					comment = c.getString(Transaction.INDEX_COMMENT);
+					etComment.setText(comment);
+					time = Calendar.getInstance();
+					time.setTimeInMillis(c.getLong(Transaction.INDEX_TIME));
+					dpDate.updateDate(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH));
 					isUpdate = true;
-					saved = false;
 					if (!c.isClosed()) {
 						c.close();
 					}
@@ -86,7 +90,6 @@ public class TransactionEditFragment extends Fragment {
 		}
 
 		if (isEditor) {
-			saved = false;
 			//			llButtons.setVisibility(View.GONE);
 			buDeposit.setText(R.string.save);
 			buDeposit.setOnClickListener(new OnClickListener() {
@@ -126,22 +129,16 @@ public class TransactionEditFragment extends Fragment {
 		save(radioWithdraw.isChecked());
 	}
 
-	protected void save(boolean isNegative) {
-		String numberStr = etAmount.getText().toString();
-		try {
-			float number = Float.parseFloat(numberStr);
+	protected void save(boolean withdraw) {
+		float number = getAmount();
 			number = Math.abs(number);
-			if (isNegative) {
+			if (withdraw) {
 				number *= -1f;
 			}
 			ContentValues values = new ContentValues();
 			values.put(Transaction.NAME_AMOUNT, number);
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.YEAR, dpDate.getYear());
-			cal.set(Calendar.MONTH, dpDate.getMonth());
-			cal.set(Calendar.DAY_OF_MONTH, dpDate.getDayOfMonth());
-			values.put(Transaction.NAME_TIME, cal.getTimeInMillis());
-			values.put(Transaction.NAME_COMMENT, etComment.getText().toString());
+			values.put(Transaction.NAME_TIME, getTime().getTimeInMillis());
+			values.put(Transaction.NAME_COMMENT, getComment());
 			if (isUpdate) {
 				getActivity().getContentResolver().update(contentUri, values, null, null);
 			} else {
@@ -149,14 +146,37 @@ public class TransactionEditFragment extends Fragment {
 			}
 			etAmount.setText(null);
 			etComment.setText(null);
-			saved = true;
+	}
+
+	private float getAmount() {
+		String a = etAmount.getText().toString();
+		try {
+			return Float.parseFloat(a);
 		} catch (NumberFormatException e) {
-			Logger.e("Cannot parse as number: " + numberStr, e);
+			Logger.e("Cannot parse as number: " + a, e);
+			return Float.POSITIVE_INFINITY;
 		}
 	}
 
-	public boolean shouldSave() {
-		return isEditor && !saved;
+	private String getComment() {
+		String c = etComment.getText().toString();
+		return c != "" ? c : null;
 	}
+
+	private Calendar getTime() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(time.getTimeInMillis());
+		cal.set(Calendar.YEAR, dpDate.getYear());
+		cal.set(Calendar.MONTH, dpDate.getMonth());
+		cal.set(Calendar.DAY_OF_MONTH, dpDate.getDayOfMonth());
+		return cal;
+	}
+
+	
+	
+	public boolean shouldSave() {
+		return isEditor && !(getTime().equals(time) && StringUtils.equal(getComment(), comment) && getAmount() == amount);
+	}
+
 
 }

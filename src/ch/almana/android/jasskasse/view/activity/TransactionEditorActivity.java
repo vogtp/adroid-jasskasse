@@ -14,7 +14,7 @@ public class TransactionEditorActivity extends FragmentActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_editor);
 	}
 
@@ -42,11 +42,10 @@ public class TransactionEditorActivity extends FragmentActivity {
 					}
 				});
 				builder.create().show();
+				return;
 			}
-			super.onBackPressed();
-		} else {
-			super.onBackPressed();
 		}
+		super.onBackPressed();
 	}
 
 }
