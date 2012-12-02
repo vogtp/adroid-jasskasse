@@ -2,10 +2,8 @@ package ch.almana.android.jasskasse.view.fragment;
 
 import java.util.Calendar;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,21 +64,23 @@ public class TransactionEditFragment extends Fragment {
 		contentUri = getActivity().getIntent().getData();
 		if (contentUri != null) {
 			isEditor = true;
-			CursorLoader cl = new CursorLoader(getActivity(), contentUri, Transaction.PROJECTION_DEFAULT, null, null, null);
-			Cursor c = cl.loadInBackground();
-			if (c != null && c.moveToFirst()) {
-				float amount = c.getFloat(Transaction.INDEX_AMOUNT);
-				radioDeposit.setChecked(amount >= 0);
-				radioWithdraw.setChecked(amount < 0);
-				etAmount.setText(Float.toString(Math.abs(amount)));
-				etComment.setText(c.getString(Transaction.INDEX_COMMENT));
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeInMillis(c.getLong(Transaction.INDEX_TIME));
-				dpDate.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-				isUpdate = true;
-				saved = false;
-				if (!c.isClosed()) {
-					c.close();
+			if (Intent.ACTION_EDIT.equals(getActivity().getIntent().getAction())) {
+				CursorLoader cl = new CursorLoader(getActivity(), contentUri, Transaction.PROJECTION_DEFAULT, null, null, null);
+				Cursor c = cl.loadInBackground();
+				if (c != null && c.moveToFirst()) {
+					float amount = c.getFloat(Transaction.INDEX_AMOUNT);
+					radioDeposit.setChecked(amount >= 0);
+					radioWithdraw.setChecked(amount < 0);
+					etAmount.setText(Float.toString(Math.abs(amount)));
+					etComment.setText(c.getString(Transaction.INDEX_COMMENT));
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(c.getLong(Transaction.INDEX_TIME));
+					dpDate.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+					isUpdate = true;
+					saved = false;
+					if (!c.isClosed()) {
+						c.close();
+					}
 				}
 			}
 		}
@@ -122,7 +122,7 @@ public class TransactionEditFragment extends Fragment {
 
 	}
 
-	private void saveEditor() {
+	public void saveEditor() {
 		save(radioWithdraw.isChecked());
 	}
 
@@ -155,22 +155,8 @@ public class TransactionEditFragment extends Fragment {
 		}
 	}
 
-	@Override
-	public void onPause() {
-		if (isEditor && !saved) {
-			AlertDialog.Builder builder = new Builder(getActivity());
-			builder.setTitle("Save changes");
-			builder.setMessage("Do you want to save the changes of the editor?");
-			builder.setNegativeButton(android.R.string.no, null);
-			builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					saveEditor();
-				}
-			});
-			builder.create().show();
-		}
-		super.onPause();
+	public boolean shouldSave() {
+		return isEditor && !saved;
 	}
 
 }

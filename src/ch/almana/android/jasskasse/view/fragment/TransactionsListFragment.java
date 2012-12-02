@@ -12,13 +12,18 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateFormat;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import ch.almana.android.jasskasse.R;
 import ch.almana.android.jasskasse.db.DB;
 import ch.almana.android.jasskasse.db.DB.Transaction;
 import ch.almana.android.jasskasse.helper.FormatHelper;
+import ch.almana.android.jasskasse.log.Logger;
 
 public class TransactionsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
@@ -78,6 +83,7 @@ public class TransactionsListFragment extends ListFragment implements LoaderCall
 		};
 		adapter.setViewBinder(binder);
 		setListAdapter(adapter);
+		getListView().setOnCreateContextMenuListener(this);
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -86,6 +92,44 @@ public class TransactionsListFragment extends ListFragment implements LoaderCall
 		super.onListItemClick(l, v, position, id);
 		Uri uri = ContentUris.withAppendedId(DB.Transaction.CONTENT_URI, id);
 		startActivity(new Intent(Intent.ACTION_EDIT, uri));
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		getActivity().getMenuInflater().inflate(R.menu.list_context, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		super.onContextItemSelected(item);
+
+		AdapterView.AdapterContextMenuInfo info;
+		try {
+			info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		} catch (ClassCastException e) {
+			Logger.e("bad menuInfo", e);
+			return false;
+		}
+
+		final Uri uri = ContentUris.withAppendedId(DB.Transaction.CONTENT_URI, info.id);
+		switch (item.getItemId()) {
+		case R.id.itemInsert:
+			startActivity(new Intent(Intent.ACTION_INSERT, DB.Transaction.CONTENT_URI));
+			return true;
+
+		case R.id.itemEdit:
+			startActivity(new Intent(Intent.ACTION_EDIT, uri));
+			return true;
+
+		case R.id.itemDelete:
+			getActivity().getContentResolver().delete(uri, null, null);
+			return true;
+
+		default:
+			return false;
+		}
+
 	}
 
 	@Override

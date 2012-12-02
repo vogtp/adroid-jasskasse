@@ -15,6 +15,10 @@
     <string name="labelAmount">Amount</string>
     <string name="etHintComment">Comment</string>
     <string name="save">Save</string>
+    <string name="close">Close</string>
     <string name="cancel">Cancel</string>
+    <string name="menuInsert">Insert</string>
+    <string name="menuEdit">Edit</string>
+    <string name="menuDelete">Delete</string>
 
 </resources>

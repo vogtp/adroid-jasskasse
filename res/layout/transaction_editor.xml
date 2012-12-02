@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <fragment
-        android:id="@+id/fragment1"
+        android:id="@+id/fragmentTransatctionEditor"
         android:name="ch.almana.android.jasskasse.view.fragment.TransactionEditFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
