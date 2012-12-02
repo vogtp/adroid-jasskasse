@@ -1,7 +1,5 @@
 package ch.almana.android.jasskasse.view.fragment;
 
-import java.text.NumberFormat;
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -67,7 +65,7 @@ public class OverviewFragment extends Fragment implements LoaderCallbacks<Cursor
 		switch (loader.getId()) {
 		case LOADER_SALDO:
 			if (c != null && c.moveToFirst()) {
-				tvSaldo.setText(NumberFormat.getCurrencyInstance().format(c.getFloat(Transaction.INDEX_SALDO_SUM)));
+				tvSaldo.setText(FormatHelper.formatCurrency(c.getFloat(Transaction.INDEX_SALDO_SUM)));
 			}
 			break;
 		case LOADER_LASTTRANSACTION:
