@@ -43,6 +43,7 @@ public class TransactionEditorActivity extends FragmentActivity {
 				});
 				builder.create().show();
 			}
+			super.onBackPressed();
 		} else {
 			super.onBackPressed();
 		}
