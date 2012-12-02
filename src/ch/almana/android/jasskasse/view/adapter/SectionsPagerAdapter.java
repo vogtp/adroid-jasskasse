@@ -7,20 +7,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import ch.almana.android.jasskasse.R;
 import ch.almana.android.jasskasse.view.fragment.OverviewFragment;
+import ch.almana.android.jasskasse.view.fragment.MailFragment;
 import ch.almana.android.jasskasse.view.fragment.TransactionsListFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-	private static final int FRAG_OVERVIEW = 0;
-	private static final int FRAG_TRANSACTIONS = 1;
+	private static final int FRAG_TRANSACTIONS = 0;
+	private static final int FRAG_OVERVIEW = 1;
+	private static final int FRAG_SEND_MAIL = 2;
 
 	private final ViewPager viewPager;
-	private final FragmentManager fragmentManager;
 
 	public SectionsPagerAdapter(ViewPager viewPager, FragmentManager fm) {
 		super(fm);
 		this.viewPager = viewPager;
-		this.fragmentManager = fm;
 	}
 
 	@Override
@@ -32,6 +32,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		case FRAG_TRANSACTIONS:
 			return new TransactionsListFragment();
 
+		case FRAG_SEND_MAIL:
+			return new MailFragment();
+
 		default:
 			return new Fragment();
 		}
@@ -39,7 +42,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -50,6 +53,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			return ctx.getString(R.string.frag_title_overview);
 		case FRAG_TRANSACTIONS:
 			return ctx.getString(R.string.frag_title_transactions);
+		case FRAG_SEND_MAIL:
+			return ctx.getString(R.string.frag_title_mail);
 		default:
 			return ctx.getString(R.string.frag_title_unknown);
 		}

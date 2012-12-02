@@ -26,6 +26,7 @@ public class MainActivity extends FragmentActivity {
 		sectionsPagerAdapter = new SectionsPagerAdapter(viewPager, getSupportFragmentManager());
 
 		viewPager.setAdapter(sectionsPagerAdapter);
+		viewPager.setCurrentItem(1);
 	}
 
 	@Override
