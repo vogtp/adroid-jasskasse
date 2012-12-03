@@ -21,5 +21,6 @@
     <string name="menuInsert">Insert</string>
     <string name="menuEdit">Edit</string>
     <string name="menuDelete">Delete</string>
+    <string name="menuSend">Send</string>
 
 </resources>

@@ -4,19 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <QuickContactBadge
-        android:id="@+id/quickContactBadge1"
+    <TextView
+        android:id="@+id/etBody"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:ems="10"
-        android:inputType="textPersonName" >
+        android:inputType="text" >
 
         <requestFocus />
-    </EditText>
+    </TextView>
 
 </LinearLayout>

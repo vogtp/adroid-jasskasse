@@ -5,8 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TabHost;
 import ch.almana.android.jasskasse.R;
+import ch.almana.android.jasskasse.helper.MailHelper;
 import ch.almana.android.jasskasse.view.adapter.SectionsPagerAdapter;
 
 public class MainActivity extends FragmentActivity {
@@ -26,14 +28,24 @@ public class MainActivity extends FragmentActivity {
 		sectionsPagerAdapter = new SectionsPagerAdapter(viewPager, getSupportFragmentManager());
 
 		viewPager.setAdapter(sectionsPagerAdapter);
-		viewPager.setCurrentItem(1);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.itemSend:
+			MailHelper.sendMail(this);
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 }

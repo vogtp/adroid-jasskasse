@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="11" />
+        android:targetSdkVersion="15" />
 
     <application
         android:name=".application.JasskasseApplication"
@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".view.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnchanged|stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
