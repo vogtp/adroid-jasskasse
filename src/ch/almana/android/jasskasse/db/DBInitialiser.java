@@ -11,6 +11,7 @@ import ch.almana.android.jasskasse.log.Logger;
 
 public class DBInitialiser {
 
+	private static final float MAX_DEBUG_AMOUNT = 10f;
 	private static final int NUM_DEBUG_ENTRIES = 10;
 	private static final boolean RECREATE = true;
 	private final Context ctx;
@@ -37,7 +38,7 @@ public class DBInitialiser {
 			}
 			Calendar cal = Calendar.getInstance();
 			for (int i = 0; i < NUM_DEBUG_ENTRIES; i++) {
-				float amount = Math.round(Math.random() * 100f);
+				float amount = Math.round(Math.random() * 10f * MAX_DEBUG_AMOUNT);
 				amount /= 10f;
 				amount -= 4f;
 				insert(cal.getTimeInMillis(), amount);
