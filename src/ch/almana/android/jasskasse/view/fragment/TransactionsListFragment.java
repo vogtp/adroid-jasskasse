@@ -23,6 +23,7 @@ import ch.almana.android.jasskasse.R;
 import ch.almana.android.jasskasse.db.DB;
 import ch.almana.android.jasskasse.db.DB.Transaction;
 import ch.almana.android.jasskasse.helper.FormatHelper;
+import ch.almana.android.jasskasse.helper.SaldoHelper;
 import ch.almana.android.jasskasse.log.Logger;
 
 public class TransactionsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
@@ -36,7 +37,7 @@ public class TransactionsListFragment extends ListFragment implements LoaderCall
 		setListShown(true);
 
 		adapter = new SimpleCursorAdapter(getActivity(), R.layout.transactions_list_item, null,
-				new String[] { Transaction.NAME_TIME, Transaction.NAME_AMOUNT, Transaction.NAME_SALDO, Transaction.NAME_COMMENT },
+				new String[] { Transaction.NAME_TIME, Transaction.NAME_AMOUNT, DB.NAME_ID /*dummy*/, Transaction.NAME_COMMENT },
 				new int[] { R.id.tvDate, R.id.tvAmount, R.id.tvSaldo, R.id.tvComment }, 0);
 		ViewBinder binder = new ViewBinder() {
 
@@ -48,17 +49,11 @@ public class TransactionsListFragment extends ListFragment implements LoaderCall
 						((TextView) view).setText(DateFormat.getDateFormat(getActivity()).format(time));
 						return true;
 					}
-				} else if (Transaction.INDEX_AMOUNT == idx || Transaction.INDEX_SALDO == idx) {
+				} else if (Transaction.INDEX_AMOUNT == idx || DB.INDEX_ID == idx) {
 					if (view instanceof TextView) {
 						float money = cursor.getFloat(idx);
-						if (Transaction.INDEX_SALDO == idx) {
-							String time = Long.toString(cursor.getLong(Transaction.INDEX_TIME) + 1);
-							CursorLoader cl = new CursorLoader(getActivity(), Transaction.CONTENT_URI, Transaction.PROJECTION_SALDO, Transaction.SELECTION_TIME,
-									new String[] { time }, Transaction.SORTORDER_DEFAULT);
-							Cursor c = cl.loadInBackground();
-							if (c != null && c.moveToFirst()) {
-								money = c.getFloat(Transaction.INDEX_SALDO_SUM);
-							}
+						if (DB.INDEX_ID == idx) {
+							money = SaldoHelper.calculateSaldo(getActivity(), cursor.getLong(Transaction.INDEX_TIME));
 						}
 						int color = getActivity().getResources().getColor(R.color.moneyGreen);
 						if (money < 0f) {
